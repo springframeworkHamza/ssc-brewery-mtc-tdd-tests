@@ -23,7 +23,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final GoogleAuthenticator googleAuthenticator;
 
-    @GetMapping("/register2fA")
+    @GetMapping("/register2fa")
     public String register2fa(Model model){
 
         User user = getUser();
@@ -38,38 +38,39 @@ public class UserController {
         return "user/register2fa";
     }
 
-    @PostMapping
+    @PostMapping("/register2fa")
     public String confirm2Fa(@RequestParam Integer verifyCode){
 
         User user = getUser();
 
-        log.debug("Entered Code is: " + verifyCode);
+        log.debug("Entered Code is:" + verifyCode);
 
-        if(googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)){
+        if (googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
             User savedUser = userRepository.findById(user.getId()).orElseThrow();
             savedUser.setUseGoogle2fa(true);
             userRepository.save(savedUser);
 
             return "/index";
         } else {
-            //bad code
+            // bad code
             return "user/register2fa";
         }
     }
 
     @GetMapping("/verify2fa")
-    public String verify2fa() {
+    public String verify2fa(){
         return "user/verify2fa";
     }
 
-    @PostMapping
-    public String verifyPostOf2FA(@RequestParam Integer verifyCode){
+    @PostMapping("/verify2fa")
+    public String verifyPostOf2Fa(@RequestParam Integer verifyCode){
+
         User user = getUser();
 
-        if(googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)){
-            ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2FaRequired(false);
+        if (googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
+            ((User)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2FaRequired(false);
 
-            return "index";
+            return "/index";
         } else {
             return "user/verify2fa";
         }
@@ -78,4 +79,6 @@ public class UserController {
     private User getUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+
 }
