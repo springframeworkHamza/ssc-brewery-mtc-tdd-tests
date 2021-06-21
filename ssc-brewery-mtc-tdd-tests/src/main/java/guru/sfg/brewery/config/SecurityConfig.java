@@ -20,9 +20,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * Created by jt on 6/13/20.
  */
 @RequiredArgsConstructor
-//@Configuration
-//@EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -40,7 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 http.addFilterBefore(google2faFilter, SessionManagementFilter.class);
 
-                http
+                // to make options() request
+                http.cors().and()
                 .authorizeRequests(authorize -> {
                     authorize
                             .antMatchers("/h2-console/**").permitAll() //do not use in production!
