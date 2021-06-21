@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 http.addFilterBefore(google2faFilter, SessionManagementFilter.class);
 
-                // to make options() request
+                // using "cors()" for making options() as a request
                 http.cors().and()
                 .authorizeRequests(authorize -> {
                     authorize
