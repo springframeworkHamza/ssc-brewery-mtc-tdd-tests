@@ -23,6 +23,7 @@ public class GoogleCredentialRepository implements ICredentialRepository {
         return user.getGoogle2FaSecret();
     }
 
+    // we don't specifically use the scratch code, it's not persisted
     @Override
     public void saveUserCredentials(String userName, String secretKey, int validationCode, List<Integer> scratchCodes) {
         User user = userRepository.findByUsername(userName).orElseThrow();
